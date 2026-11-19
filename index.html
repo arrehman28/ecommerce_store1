@@ -1,0 +1,583 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ShopEase - Online Store</title>
+
+    <style>
+
+        /* BASIC CSS */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: #f5f5f5;
+        }
+
+        /* NAVBAR */
+        .navbar {
+            background: #172554;
+            color: white;
+            padding: 20px 8%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            color: #38bdf8;
+            font-size: 28px;
+        }
+
+        .navbar ul {
+            display: flex;
+            list-style: none;
+            gap: 30px;
+        }
+
+        .navbar ul li a {
+            color: white;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .navbar ul li a:hover {
+            color: #38bdf8;
+        }
+
+        /* CART */
+        .cart {
+            font-size: 18px;
+        }
+
+        /* PAGES */
+        .page {
+            display: none;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        /* HERO SECTION */
+        .hero {
+            height: 400px;
+            background: linear-gradient(
+                rgba(15, 23, 42, 0.75),
+                rgba(15, 23, 42, 0.75)
+            ), url("https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=1400");
+
+            background-size: cover;
+            background-position: center;
+
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            color: white;
+        }
+
+        .hero h1 {
+            font-size: 45px;
+            margin-bottom: 15px;
+        }
+
+        .hero p {
+            font-size: 20px;
+            margin-bottom: 25px;
+        }
+
+        /* BUTTON */
+        .btn {
+            background: #0284c7;
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn:hover {
+            background: #0369a1;
+        }
+
+        /* CONTAINER */
+        .container {
+            padding: 50px 8%;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 32px;
+            margin-bottom: 35px;
+            color: #172554;
+        }
+
+        /* PRODUCT GRID */
+        .product-container {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 25px;
+        }
+
+        /* PRODUCT CARD */
+        .product-card {
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 3px 12px rgba(0,0,0,0.1);
+            transition: 0.3s;
+        }
+
+        .product-card:hover {
+            transform: translateY(-8px);
+        }
+
+        .product-card img {
+            width: 100%;
+            height: 230px;
+            object-fit: cover;
+        }
+
+        .product-info {
+            padding: 20px;
+        }
+
+        .product-info h3 {
+            margin-bottom: 10px;
+        }
+
+        .product-info p {
+            margin-bottom: 15px;
+            color: #555;
+        }
+
+        .price {
+            color: #0284c7 !important;
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .product-info button {
+            width: 100%;
+        }
+
+        /* SEARCH */
+        .search {
+            width: 100%;
+            padding: 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+            margin-bottom: 25px;
+        }
+
+        /* FILTERS */
+        .filters {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-bottom: 35px;
+        }
+
+        .filter-btn {
+            padding: 10px 20px;
+            background: white;
+            border: 1px solid #0284c7;
+            color: #0284c7;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .filter-btn.active,
+        .filter-btn:hover {
+            background: #0284c7;
+            color: white;
+        }
+
+        .center {
+            text-align: center;
+            margin-top: 35px;
+        }
+
+        /* FOOTER */
+        footer {
+            background: #172554;
+            color: white;
+            text-align: center;
+            padding: 35px;
+            margin-top: 40px;
+        }
+
+        footer h2 {
+            color: #38bdf8;
+            margin-bottom: 10px;
+        }
+
+        footer p {
+            margin-top: 10px;
+        }
+
+        /* RESPONSIVE */
+        @media(max-width: 768px) {
+
+            .product-container {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .navbar {
+                flex-wrap: wrap;
+                gap: 15px;
+            }
+
+            .hero h1 {
+                font-size: 30px;
+            }
+        }
+
+        @media(max-width: 500px) {
+
+            .product-container {
+                grid-template-columns: 1fr;
+            }
+
+            .navbar {
+                justify-content: center;
+            }
+
+            .hero h1 {
+                font-size: 26px;
+            }
+
+        }
+
+    </style>
+</head>
+
+<body>
+
+    <!-- NAVBAR -->
+    <nav class="navbar">
+
+        <h2 class="logo">ShopEase</h2>
+
+        <ul>
+            <li><a onclick="showPage('home')">Home</a></li>
+            <li><a onclick="showPage('products')">Products</a></li>
+        </ul>
+
+        <div class="cart">
+            🛒 Cart (<span id="cart-count">0</span>)
+        </div>
+
+    </nav>
+
+
+    <!-- HOME PAGE -->
+    <div id="home" class="page active">
+
+        <section class="hero">
+
+            <div>
+                <h1>Welcome to ShopEase</h1>
+
+                <p>Discover Amazing Products at Amazing Prices.</p>
+
+                <button class="btn" onclick="showPage('products')">
+                    Shop Now
+                </button>
+            </div>
+
+        </section>
+
+
+        <section class="container">
+
+            <h2 class="section-title">Featured Products</h2>
+
+            <div class="product-container" id="featured-products"></div>
+
+            <div class="center">
+
+                <button class="btn" onclick="showPage('products')">
+                    View All Products
+                </button>
+
+            </div>
+
+        </section>
+
+    </div>
+
+
+    <!-- PRODUCTS PAGE -->
+    <div id="products" class="page">
+
+        <section class="container">
+
+            <h1 class="section-title">Our Products</h1>
+
+            <input
+                type="text"
+                id="search"
+                class="search"
+                placeholder="Search products..."
+            >
+
+            <div class="filters">
+
+                <button class="filter-btn active" onclick="filterProducts('All', this)">
+                    All
+                </button>
+
+                <button class="filter-btn" onclick="filterProducts('Electronics', this)">
+                    Electronics
+                </button>
+
+                <button class="filter-btn" onclick="filterProducts('Fashion', this)">
+                    Fashion
+                </button>
+
+                <button class="filter-btn" onclick="filterProducts('Accessories', this)">
+                    Accessories
+                </button>
+
+            </div>
+
+            <div class="product-container" id="all-products"></div>
+
+        </section>
+
+    </div>
+
+
+    <!-- FOOTER -->
+    <footer>
+
+        <h2>ShopEase</h2>
+
+        <p>Your One-Stop Online Shopping Store.</p>
+
+        <p>© 2026 ShopEase. All Rights Reserved.</p>
+
+    </footer>
+
+
+    <!-- JAVASCRIPT -->
+    <script>
+
+        // PRODUCTS DATA
+
+        let products = [
+
+            {
+                name: "Wireless Headphones",
+                category: "Electronics",
+                price: 4500,
+                image: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=500"
+            },
+
+            {
+                name: "Smart Watch",
+                category: "Electronics",
+                price: 6500,
+                image: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=500"
+            },
+
+            {
+                name: "Running Shoes",
+                category: "Fashion",
+                price: 5500,
+                image: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=500"
+            },
+
+            {
+                name: "Backpack",
+                category: "Accessories",
+                price: 2500,
+                image: "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=500"
+            },
+
+            {
+                name: "Men's Jacket",
+                category: "Fashion",
+                price: 4000,
+                image: "https://images.unsplash.com/photo-1551028719-00167b16eac5?w=500"
+            },
+
+            {
+                name: "Sunglasses",
+                category: "Accessories",
+                price: 1800,
+                image: "https://images.unsplash.com/photo-1511499767150-a48a237f0083?w=500"
+            }
+
+        ];
+
+
+        // CART
+
+        let cart = JSON.parse(localStorage.getItem("cart")) || [];
+
+
+        // SHOW PAGE
+
+        function showPage(pageName) {
+
+            document.querySelectorAll(".page").forEach(function(page) {
+
+                page.classList.remove("active");
+
+            });
+
+            document.getElementById(pageName).classList.add("active");
+
+        }
+
+
+        // DISPLAY PRODUCTS
+
+        function displayProducts(list, container) {
+
+            container.innerHTML = "";
+
+            if (list.length === 0) {
+                container.innerHTML = "<h3>No Products Found!</h3>";
+                return;
+            }
+
+            list.forEach(function(product) {
+
+                let index = products.indexOf(product);
+
+                container.innerHTML += `
+
+                    <div class="product-card">
+
+                        <img src="${product.image}" alt="${product.name}">
+
+                        <div class="product-info">
+
+                            <h3>${product.name}</h3>
+
+                            <p>${product.category}</p>
+
+                            <p class="price">Rs. ${product.price}</p>
+
+                            <button class="btn" onclick="addToCart(${index})">
+                                Add To Cart
+                            </button>
+
+                        </div>
+
+                    </div>
+
+                `;
+
+            });
+
+        }
+
+
+        // ADD TO CART
+
+        function addToCart(index) {
+
+            cart.push(products[index]);
+
+            localStorage.setItem("cart", JSON.stringify(cart));
+
+            updateCart();
+
+            alert("Product Added To Cart!");
+
+        }
+
+
+        // UPDATE CART COUNT
+
+        function updateCart() {
+
+            document.getElementById("cart-count").innerText = cart.length;
+
+        }
+
+
+        // CATEGORY FILTER
+
+        function filterProducts(category, button) {
+
+            document.querySelectorAll(".filter-btn").forEach(function(btn) {
+
+                btn.classList.remove("active");
+
+            });
+
+            button.classList.add("active");
+
+            let filtered;
+
+            if (category === "All") {
+
+                filtered = products;
+
+            } else {
+
+                filtered = products.filter(function(product) {
+
+                    return product.category === category;
+
+                });
+
+            }
+
+            displayProducts(filtered, document.getElementById("all-products"));
+
+        }
+
+
+        // SEARCH PRODUCTS
+
+        document.getElementById("search").addEventListener("input", function() {
+
+            let value = this.value.toLowerCase();
+
+            let filtered = products.filter(function(product) {
+
+                return product.name.toLowerCase().includes(value) ||
+                       product.category.toLowerCase().includes(value);
+
+            });
+
+            displayProducts(filtered, document.getElementById("all-products"));
+
+        });
+
+
+        // INITIAL DISPLAY
+
+        displayProducts(
+            products.slice(0, 3),
+            document.getElementById("featured-products")
+        );
+
+        displayProducts(
+            products,
+            document.getElementById("all-products")
+        );
+
+        updateCart();
+
+    </script>
+
+</body>
+</html>
